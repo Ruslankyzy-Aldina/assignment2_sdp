@@ -12,6 +12,7 @@ import org.example.factories.*;
 import org.example.families.road.*;
 import org.example.families.air.*;
 import org.example.families.sea.*;
+import org.example.families.rail.*;
 import org.example.model.*;
 import org.example.products.*;
 
@@ -97,6 +98,25 @@ public final class AssignmentTests {
         });
         test("Business client accepts a new test-only abstract factory", AssignmentTests::abstractionTest);
         test("Compiler rejects a mixed family label", AssignmentTests::rejectMixedFamily);
+        test("Rail factory creates all three products", () -> {
+            var f = new RailFactory();
+            check(f.createPlanner() instanceof RailPlanner);
+            check(f.createLabeler() instanceof RailLabeler);
+            check(f.createIntakeScanner() instanceof RailIntakeScanner);
+        });
+        test("Rail runtime selection", () -> check(FactoryRegistry.select("rail") instanceof RailFactory));
+        test("Rail kit collaborates", () -> compatible(new RailFactory()));
+        test("Rail supports unchanged business workflows", () -> {
+            var rail = new MuseumDispatch<>(new RailFactory());
+            var booked = rail.book(CRATE, 90, 5);
+            check(booked.plan().cost() == 90 && booked.plan().days() == 5);
+            var redirected = rail.reroute(booked, SAFE, "SITE-C", 90, 5);
+            check(redirected.payload().startsWith("RAIL#") && redirected.payload().contains("SITE-C"));
+            check(rail.receive(redirected, SAFE).startsWith("ACCEPTED"));
+            check(rail.receive(redirected, new Reading(3, 101, 40)).startsWith("QUARANTINE"));
+        });
+        test("Rail capacity is enforced", () -> expect(IllegalArgumentException.class,
+            () -> new RailDispatchCreator().prepare(new Shipment("ART-101", 1001, "SITE-A"), 10000, 20)));
         System.out.println("PASS: " + passed + " tests");
     }
 

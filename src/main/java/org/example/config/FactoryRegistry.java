@@ -9,7 +9,8 @@ public final class FactoryRegistry {
     private static final Map<String, Supplier<TransportFactory<?>>> FACTORIES = Map.of(
         "road", RoadFactory::new,
         "air", AirFactory::new,
-        "sea", SeaFactory::new
+        "sea", SeaFactory::new,
+        "rail", RailFactory::new
     );
     private FactoryRegistry() {}
     public static TransportFactory<?> select(String name) {
