@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import org.example.factories.*;
 
-/** Composition root: the only runtime selection table. */
 public final class FactoryRegistry {
     private static final Map<String, Supplier<TransportFactory<?>>> FACTORIES = Map.of(
         "road", RoadFactory::new,

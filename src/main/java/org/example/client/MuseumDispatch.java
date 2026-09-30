@@ -5,7 +5,6 @@ import org.example.creators.DispatchCreator;
 import org.example.products.*;
 import org.example.model.*;
 
-/** The business client knows only abstractions and the family type parameter. */
 public final class MuseumDispatch<F extends Family> {
     private final Planner<F> planner;
     private final Labeler<F> labeler;
@@ -19,12 +18,10 @@ public final class MuseumDispatch<F extends Family> {
         creator = factory.createDispatchCreator();
     }
 
-    /** Check capacity, budget and deadline before issuing a manifest. */
     public Label<F> book(Shipment shipment, int budget, int deadlineDays) {
         return labeler.encode(creator.prepare(shipment, budget, deadlineDays));
     }
 
-    /** Damaged crates cannot travel further; a new destination needs a new manifest. */
     public Label<F> reroute(Label<F> current, Reading reading, String destination,
                             int budget, int deadlineDays) {
         if (!scanner.safe(current, reading))
@@ -32,7 +29,6 @@ public final class MuseumDispatch<F extends Family> {
         return book(current.plan().shipment().redirectedTo(destination), budget, deadlineDays);
     }
 
-    /** Recompute the expected plan and manifest, then inspect the arrival sensors. */
     public String receive(Label<F> label, Reading reading) {
         Plan<F> expected = planner.plan(label.plan().shipment());
         boolean authentic = expected.equals(label.plan())

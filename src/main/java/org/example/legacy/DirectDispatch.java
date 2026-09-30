@@ -1,6 +1,5 @@
 package org.example.legacy;
 
-/** Part A: intentionally coupled baseline, retained for comparison. */
 public final class DirectDispatch {
     public static final class RoadPlanner { public int cost(int kg) { return 40 + 2 * kg; } }
     public static final class AirPlanner { public int cost(int kg) { return 200 + 8 * kg; } }

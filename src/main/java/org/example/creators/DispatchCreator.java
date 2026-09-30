@@ -3,7 +3,6 @@ package org.example.creators;
 import org.example.model.*;
 import org.example.products.Planner;
 
-/** Factory Method: subclasses supply a planner for this shared booking workflow. */
 public abstract class DispatchCreator<F extends Family> {
     protected abstract Planner<F> createPlanner();
 
